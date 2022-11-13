@@ -10,8 +10,23 @@ class MyHashMap<T,V> {
     private MyMap<T,V> head;
     private MyMap<T,V> tail;
     private int size = 0;
-    public void put(T key, V value)
-    {
+    public V put(T key, V value)
+    {   MyMap<T,V> t = head;
+        V sValue;
+        if(t.key == key){
+            sValue = t.value;
+            t.value = value;
+            return sValue;
+        }
+        while (t.next != null) {
+            if (t.next.key == key) {
+                t = t.next;
+                sValue = t.value;
+                t.value = value;
+                return sValue;
+            }
+            t = t.next;
+        }
         MyMap<T,V> a = new MyMap<T,V>();
         a.key = key;
         a.value = value;
@@ -25,6 +40,7 @@ class MyHashMap<T,V> {
             a.next = head;
             head = a;
         }
+        return null;
     }
 
     public V get(T key){
