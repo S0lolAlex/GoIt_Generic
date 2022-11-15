@@ -1,66 +1,89 @@
 import java.io.IOException;
 
 public class MyArrayList<T> {
-    private T[] array ;
+    private T[] array= (T[]) new Object[10];
 
     public MyArrayList(T[] array){
-        this.array = array;
+        if(array.length < this.array.length){
+        System.arraycopy(array,0,this.array,0,array.length);
+        }else{
+            while(array.length > this.array.length){
+            this.array =(T[]) new Object[this.array.length * 2];
+            }
+            System.arraycopy(array,0,this.array,0,array.length);
+        }
     }
-
-    public MyArrayList(){
-        array = (T[]) new Object[0];
-
-    }
+    public MyArrayList(){    }
 
     public boolean add(T value){
-        if(array == null) {
-            array = (T[]) new Object[1];
-            array[0] = value;
-            return true;
-        }
-        int size = array.length + 1;
-        try{
-        T[] result = (T[]) new Object[size];
-        int i = 0;
-        for(T s : array){
-            result[i++] = s;
-        }
-        result[result.length - 1] = value;
-        array = result;}catch (ClassCastException e){
-            return false;
+       int  lastValueIndex;
+        if(array[array.length - 1] != null){
+             lastValueIndex = array.length;
+            T[] result = (T[]) new Object[lastValueIndex + 10];
+            System.arraycopy(array,0,result,0,lastValueIndex);
+            array = result;
+            array[lastValueIndex] = value;
+        }else{
+            lastValueIndex = 0;
+            while(array[lastValueIndex]!= null){
+                lastValueIndex++;
+            }
+            array[lastValueIndex] = value;
         }
         return true;
     }
 
-    public boolean remove(int index){
+    public T remove(int index){
         T[] result = (T[]) new Object[array.length - 1];
-        int i = 0,j = 0;
-       try{
-           for(T s : array){
-               if(i++ == index){
-                   continue;
-               }
-               result[j++] = s;
-           }
-
-        array = result;}
-    catch(IndexOutOfBoundsException e){
-           return false;
-    }
-       return true;
+        T valueRemove = array[index];
+        if(index == 0){
+            System.arraycopy(array,0,result,1,array.length - 1);
+        }else if(index == array.length -1){
+            System.arraycopy(array, 0, result, 0, index - 1);
+        }else{
+            System.arraycopy(array, 0, result, 0, index);
+            System.arraycopy(array, index + 1, result, index, array.length - (index + 1) );
+        }
+        array = result;
+       return valueRemove;
     }
 
     public void clear(){
-        array = (T[]) new Object[0];
-        System.out.println("Array is null");
+        array = (T[]) new Object[10];
     }
 
     public int size(){
-        return array.length;
+        int size = 0;
+        if(array[array.length - 1] != null) return array.length;
+        while(array[size]!=null){
+            size++;
+        }
+        return size;
     }
 
     public T get(int index){
+        if(array[index] == null) throw new IndexOutOfBoundsException("Нет такого индекса");
         return array[index];
+    }
+
+    public static void main(String[] args) {
+        MyArrayList<String> example = new MyArrayList<>();
+        example.add("1");
+        example.add("2");
+        example.add("3");
+        example.add("4");
+        example.add("5");
+        example.add("6");
+        example.add("7");
+        example.add("8");
+        example.add("9");
+        example.add("10");
+        example.add("11");
+        System.out.println(example.get(6) + " " + example.size());
+        example.remove(6);
+        System.out.println(example.get(6) + " " + example.size());
+        example.clear();
+        System.out.println(example.size());
     }
 
 }
