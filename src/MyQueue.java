@@ -1,58 +1,54 @@
 public class MyQueue<T> {
-    private T[] array;
+    private Object[] array;
 
     public MyQueue(){
-        array = (T[]) new Object[0];
+        array =  new Object[0];
 
     }
 
-    public MyQueue(T[] array){
+    public MyQueue(Object[] array){
         this.array = array;
     }
 
     public boolean add(T value){
         if(array == null) {
-            array = (T[]) new Object[1];
+            array =  new Object[1];
             array[0] = value;
             return true;
         }
         int size = array.length + 1;
-        try{
-            T[] result = (T[]) new Object[size];
-            int i = 0;
-            for(T s : array){
-                result[i++] = s;
-            }
+            Object[] result =  new Object[size];
+        System.arraycopy(array, 0, result, 0, array.length);
             result[result.length - 1] = value;
-            array = result;}catch (ClassCastException e){
-            return false;
-        }
+            array = result;
         return true;
     }
 
     public void clear(){
-        array = (T[]) new Object[0];
+        array =  new Object[0];
     }
 
     public int size(){
         return array.length;
     }
 
-    public T peek(){
+    public Object peek(){
+        if(array.length == 0) return null;
         return array[0];
     }
 
-    public T poll(){
-        T value = array[0];
+    public Object poll(){
+        Object value = array[0];
         if(array.length == 1 ) {array = null; return value;}
         int size = array.length - 1;
-        T[] result = (T[]) new Object[size];
-        int index = 0;
-        for(int i = 1;i < size;i++){
-            result[index++] = array[i];
-        }
+        Object[] result =  new Object[size];
+        System.arraycopy(array, 0, result, 0, size - 1);
         array = result;
         return value;
+    }
 
+    public static void main(String[] args) {
+        MyQueue<String> example = new MyQueue<>();
+        System.out.println(example.peek());
     }
 }

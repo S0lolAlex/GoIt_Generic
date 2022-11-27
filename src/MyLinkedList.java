@@ -1,26 +1,26 @@
-public class MyLinkedList<E> {
+import java.util.LinkedList;
 
+public class MyLinkedList<E> {
     private Node<E> prevList;
     private Node<E> lastList;
 
     private int size = 0;
 
     public MyLinkedList(){
-        lastList = new Node<E>(null, prevList,null);
-        prevList = new Node<E>(null, null, lastList);
+        clear();
     }
 
     public void add(E e){
-        Node<E> prev = lastList;
-        prev.setCurrent(e);
-        lastList = new Node<E>(null, prev, null);
-        prev.setLastNode(lastList);
+        Node<E> newNode = new Node<>(prevList, e, lastList);
+        lastList.prevNode = newNode;
+        prevList.nextNode = newNode;
+
         size++;
 
     }
 
     public E get(int index){
-        Node<E> tmp = prevList.getLastNode();
+        Node<E> tmp = prevList.getNextNode();
         for(int i = 0; i < index;i++){
             tmp = getLastList(tmp);
         }
@@ -28,35 +28,37 @@ public class MyLinkedList<E> {
     }
 
     private Node<E> getLastList(Node<E> current){
-        return current.getLastNode();
+        return current.getNextNode();
     }
 
     public void clear(){
-        lastList = new Node<E>(null, prevList,null);
+        lastList = new Node<E>(prevList,null, null);
         prevList = new Node<E>(null, null, lastList);
+        size = 0;
 
     }
 
     public void remove(int index){
-        Node<E> tmp = prevList.getLastNode();
+        if(index > size) throw new IndexOutOfBoundsException("Выход за пределы");
+        Node<E> tmp = prevList.getNextNode();
         for(int i = 0; i < index;i++){
             tmp = getLastList(tmp);
         }
         Node<E> tmp2 = tmp.getPrevNode();
-        tmp2.setLastNode(tmp.getLastNode());
-        tmp = tmp2.getLastNode();
-        tmp.setPrevNode(tmp2.getLastNode());
+        tmp2.setNextNode(tmp);
+        tmp.setPrevNode(tmp2.getNextNode());
+        size--;
     }
 
     private class Node<E>{
         private E current;
         private Node<E> prevNode;
-        private Node<E> lastNode;
+        private Node<E> nextNode;
 
-        private Node(E current, Node<E> prevNode, Node<E> lastNode){
+        private Node(Node<E> prevNode, E current, Node<E> nextNode){
             this.current = current;
             this.prevNode = prevNode;
-            this.lastNode = lastNode;
+            this.nextNode = nextNode;
         }
 
         public E getCurrent() {
@@ -67,16 +69,16 @@ public class MyLinkedList<E> {
             return prevNode;
         }
 
-        public Node<E> getLastNode() {
-            return lastNode;
+        public Node<E> getNextNode() {
+            return nextNode;
         }
 
         public void setCurrent(E current) {
             this.current = current;
         }
 
-        public void setLastNode(Node<E> lastNode) {
-            this.lastNode = lastNode;
+        public void setNextNode(Node<E> nextNode) {
+            this.nextNode = nextNode;
         }
 
         public void setPrevNode(Node<E> prevNode) {
@@ -87,5 +89,6 @@ public class MyLinkedList<E> {
     public int size() {
         return size;
     }
+
 
 }

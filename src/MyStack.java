@@ -1,31 +1,25 @@
 public class MyStack<T> {
-    T[] array;
+    private Object[] array =  new Object[0];
 
     public MyStack(){
 
     }
 
-    public MyStack(T[] array){
+    public MyStack(Object[] array){
         this.array = array;
     }
 
     public boolean push(T value){
         int size = array.length + 1;
-        try{
-            T[] result = (T[]) new Object[size];
-            int i = 0;
-            for(T s : array){
-                result[i++] = s;
-            }
-            result[result.length - 1] = value;
-            array = result;}catch (ClassCastException e){
-            return false;
-        }
+        Object[] result = new Object[size];
+        System.arraycopy(array, 0, result, 0, array.length);
+        result[result.length - 1] = value;
+        array = result;
         return true;
     }
 
     public void clear(){
-        array = (T[]) new Object[0];
+        array =  new Object[0];
     }
 
     public int size(){
@@ -33,38 +27,34 @@ public class MyStack<T> {
     }
 
     public boolean remove(int index){
-        T[] result = (T[]) new Object[array.length - 1];
-        int i = 0,j = 0;
-        try{
-            for(T s : array){
-                if(i++ == index){
-                    continue;
-                }
-                result[j++] = s;
-            }
-
-            array = result;}
-        catch(IndexOutOfBoundsException e){
-            return false;
+        if(index > array.length - 1) throw new IndexOutOfBoundsException("Превышен индекс");
+        Object[] result = new Object[array.length - 1];
+        Object valueRemove = array[index];
+        if(index == 0){
+            System.arraycopy(array,0,result,1,array.length - 1);
+        }else if(index == array.length -1){
+            System.arraycopy(array, 0, result, 0, index - 1);
+        }else{
+            System.arraycopy(array, 0, result, 0, index);
+            System.arraycopy(array, index + 1, result, index, array.length - (index + 1) );
         }
+        array = result;
         return true;
     }
 
-    public T peek(){
+    public Object peek(){
         return array[array.length - 1];
     }
 
-    public T poll(){
-        T value = array[array.length - 1];
-        if(array.length == 1 ) {array = null;return value;}
+    public Object poll(){
+        Object value = array[array.length - 1];
+        if(array.length == 1 ) {array = null; return value;}
         int size = array.length - 1;
-        T[] result = (T[]) new Object[size];
-        for(int i = 0;i < size;i++){
-            result[i] = array[i];
-        }
+        Object[] result = new Object[size];
+        System.arraycopy(array, 0, result, 0, array.length - 1);
         array = result;
         return value;
-
     }
+
 
 }
