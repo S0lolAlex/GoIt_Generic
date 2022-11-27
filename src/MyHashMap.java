@@ -110,18 +110,5 @@ class Node <K,V>{
     public void setNext(Node<K,V> next){
         this.next = next;
     }
-    @Override
-    public boolean equals(Object o){
-        if(this == o){
-            return true;
-        }
 
-        if(o instanceof Node){
-            Node<K,V> newNode = (Node<K,V>)o;
-            return Objects.equals(key,newNode.getKey())
-                    && Objects.equals(value, newNode.getValue())
-                    || Objects.equals(hashCode(), newNode.hashCode());
-        }
-        return false;
-    }
 }
