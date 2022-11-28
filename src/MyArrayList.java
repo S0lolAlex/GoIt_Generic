@@ -78,7 +78,7 @@ public class MyArrayList<T> {
     }
 
     public Object get(int index){
-        if(array[index] == null) throw new IndexOutOfBoundsException("Нет такого индекса");
+        if(getLastIndex() - 1 < index ) throw new IndexOutOfBoundsException("Нет такого индекса");
         return array[index];
     }
 
