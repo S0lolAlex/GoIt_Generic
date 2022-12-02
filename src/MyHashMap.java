@@ -1,114 +1,106 @@
-import java.util.Objects;
-
 public class MyHashMap<K,V> {
-    private Node<K,V> list;
+    Node<K,V> head;
     int size ;
 
-    public MyHashMap(){
-        list = new Node<K,V>(null,null,null);
-        size = 0;
-    }
+    public void put(K key, V value){
+        Node<K,V> newNode = new Node<>(key,value);
+        newNode.next = null;
 
-    public V put(K key, V value){
-        Node<K,V> newNode = new Node<K,V>(null,null,null);
-        Node<K,V> temp = list;
-        if(list.getKey() == null){
-            list.setKey(key);
-            list.setValue(value);
-            list.setNext(newNode);
+        if(head == null){
+            head = newNode;
             size++;
-            return null;
         }
-        while(temp.getNext() != null){
-            if(key == temp.getKey()){
-                V oldValue = temp.getValue();
-                temp.setValue(value);
-                return oldValue;
+         Node<K,V> last = head;
+            while (last.next != null) {
+                if(last.key == key){
+                    System.out.println(last.value);
+                    last.value = value;
+                    return;
+                }
+                last = last.next;
             }
-            newNode = temp;
-            temp = temp.getNext();
-            list = newNode;
-        }
-        newNode = new Node<K,V>(key,value,null);
-        list.setNext(newNode);
-        size++;
-        return null;
+            last.next = newNode;
+            size++;
     }
 
     public void clear(){
-       list =  new Node<K,V>(null,null,null);
+       head =  null;
        size = 0;
     }
 
-    public int getSize(){
+    public int size(){
         return size;
     }
 
     public void remove(K key){
-        Node<K,V> temp = list;
-        Node<K,V> newNode ;
-        while(temp.getKey() != null){
-            if(key == temp.getKey()){
-                if(temp.getNext()!= null){
-                    list.setNext(list.getNext());
-                }else{ list.setNext(null);}
-                size--;
-                return;
+        if(head == null) throw new NullPointerException("list empty");
+        Node<K,V> currNode = head, prev = null,temp = head;
+        boolean consist = false;
+        if(head != null){
+            while(temp != null){
+                if(temp.key == key){
+                    consist = true;
+                }
+                temp = temp.next;
             }
-            newNode = temp;
-            temp = temp.getNext();
-            list = newNode;
+            if (consist == false)throw new IndexOutOfBoundsException("ключа нет");
         }
+
+        if (currNode != null && currNode.key == key) {
+            head = currNode.next;
+        System.out.println(currNode.value);
+        if(size > 1){size--;}else {size = 0;}
+        }
+        while (currNode != null && currNode.key != key) {
+            prev = currNode;
+            currNode = currNode.next;
+        }
+        if (currNode != null) {
+            prev.next = currNode.next;
+            System.out.println(currNode.value);
+            size--;
+        }
+        if (currNode == null) {
+            System.out.println("key not found");
+        }
+
     }
 
     public V get(K key){
-        Node<K,V> temp = list;
-        Node<K,V> newNode;
-        while(temp.getKey() != null){
-            if(key == temp.getKey()){
-                return temp.getValue();
-            }
-            newNode = temp;
-            temp = temp.getNext();
-            list = newNode;
-        }
-        return null;
-    }
+        if(head == null) throw new NullPointerException("list empty");
+        Node<K,V> currNode = head,temp = head;
+        V value = null;
+        boolean consist = false;
 
+        if(head != null){
+            while(temp != null){
+                if(temp.key == key){
+                    consist = true;
+                }
+                temp = temp.next;
+            }
+            if (consist == false)throw new IndexOutOfBoundsException("ключа нет");
+        }
+
+        while (currNode != null) {
+            if(currNode.key == key){
+               return currNode.value;
+            }
+            currNode = currNode.next;
+        }
+        return value;
+    }
 
 }
 class Node <K,V>{
-    private K key;
-    private V value;
-    private Node<K,V> next;
+     K key;
+     V value;
+    Node<K,V> next;
 
-    public Node(K key, V value, Node<K,V> next){
+    public Node(K key, V value){
         this.key = key;
         this.value = value;
-        this.next = next;
-    }
-
-    public K getKey() {
-        return key;
-    }
-
-    public V getValue(){
-        return value;
-    }
-    public void setKey(K key){
-        this.key = key;
-    }
-
-    public void setValue(V value){
-        this. value = value;
-    }
-
-    public Node<K,V> getNext(){
-        return next;
-    }
-
-    public void setNext(Node<K,V> next){
-        this.next = next;
+        this.next = null;
     }
 
 }

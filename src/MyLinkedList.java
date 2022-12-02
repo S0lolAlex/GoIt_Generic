@@ -1,94 +1,85 @@
 import java.util.LinkedList;
 
 public class MyLinkedList<E> {
-    private Node<E> prevList;
-    private Node<E> lastList;
+    private Node<E> head;
 
-    private int size = 0;
-
-    public MyLinkedList(){
-        clear();
-    }
-
-    public void add(E e){
-        Node<E> newNode = new Node<>(prevList, e, lastList);
-        lastList.prevNode = newNode;
-        prevList.nextNode = newNode;
-
-        size++;
-
+   public void add(E e){
+        Node<E> newNode = new Node<>(null,e);
+        if(head == null){
+            head = newNode;
+        }else{
+        Node<E> last = head;
+        while(last.next != null){
+            last = last.next;
+        }
+        newNode.prev = last;
+        newNode.size = newNode.prev.size + 1;
+        last.next = newNode;}
     }
 
     public E get(int index){
-        Node<E> tmp = prevList.getNextNode();
-        for(int i = 0; i < index;i++){
-            tmp = getLastList(tmp);
+       if(index > size() - 1) throw new IndexOutOfBoundsException("list is empty or index is invalid");
+        Node<E> currNode = head;
+        while(currNode != null){
+            if(currNode.size == index){
+                return currNode.current;
+            }
+            currNode = currNode.next;
         }
-        return tmp.getCurrent();
-    }
-
-    private Node<E> getLastList(Node<E> current){
-        return current.getNextNode();
-    }
+        return null;
+   }
 
     public void clear(){
-        lastList = new Node<E>(prevList,null, null);
-        prevList = new Node<E>(null, null, lastList);
-        size = 0;
-
+       head = null;
     }
 
     public void remove(int index){
-        if(index > size) throw new IndexOutOfBoundsException("Выход за пределы");
-        Node<E> tmp = prevList.getNextNode();
-        for(int i = 0; i < index;i++){
-            tmp = getLastList(tmp);
+        if(index >= size()) throw new IndexOutOfBoundsException("Выход за пределы");
+        Node<E> currNode = head,prev = null;
+
+        if(currNode.size == index){
+            head = currNode.next;
+            head.prev = null;
+            currNode = head;
+            while(currNode != null){
+                currNode.size--;
+                currNode = currNode.next;
+            }
         }
-        Node<E> tmp2 = tmp.getPrevNode();
-        tmp2.setNextNode(tmp);
-        tmp.setPrevNode(tmp2.getNextNode());
-        size--;
+        currNode = head;
+        while(currNode != null && currNode.size != index){
+            currNode = currNode.next;
+        }
+        prev = currNode.prev;
+        currNode = currNode.next;
+        currNode.prev = prev;
+        prev.next = currNode;
+        while(currNode != null){
+            currNode.size--;
+            currNode = currNode.next;
+        }
+
     }
-
-    private class Node<E>{
-        private E current;
-        private Node<E> prevNode;
-        private Node<E> nextNode;
-
-        private Node(Node<E> prevNode, E current, Node<E> nextNode){
-            this.current = current;
-            this.prevNode = prevNode;
-            this.nextNode = nextNode;
-        }
-
-        public E getCurrent() {
-            return current;
-        }
-
-        public Node<E> getPrevNode() {
-            return prevNode;
-        }
-
-        public Node<E> getNextNode() {
-            return nextNode;
-        }
-
-        public void setCurrent(E current) {
-            this.current = current;
-        }
-
-        public void setNextNode(Node<E> nextNode) {
-            this.nextNode = nextNode;
-        }
-
-        public void setPrevNode(Node<E> prevNode) {
-            this.prevNode = prevNode;
-        }
-    }
-
     public int size() {
-        return size;
-    }
+        if(head == null) throw new NullPointerException("list is empty");
+       Node<E> currNode = head;
 
+        while(currNode.next != null){
+            currNode = currNode.next;
+        }
+       return currNode.size + 1;
+    }
+    private class Node<E>{
+        E current;
+        Node<E> prev;
+        Node<E> next;
+        int size = 0;
+
+        private Node(Node<E> prev, E current){
+            this.current = current;
+            this.prev = prev;
+            this.next = null;
+        }
+    }
 
 }
