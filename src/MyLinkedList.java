@@ -50,15 +50,17 @@ public class MyLinkedList<E> {
         while(currNode != null && currNode.size != index){
             currNode = currNode.next;
         }
+        if(index != 0){
         prev = currNode.prev;
         currNode = currNode.next;
         currNode.prev = prev;
         prev.next = currNode;
+
         while(currNode != null){
             currNode.size--;
             currNode = currNode.next;
         }
-
+        }
     }
     public int size() {
         if(head == null) throw new NullPointerException("list is empty");
@@ -80,6 +82,16 @@ public class MyLinkedList<E> {
             this.prev = prev;
             this.next = null;
         }
+    }
+
+    public static void main(String[] args) {
+       MyLinkedList<Integer> list = new MyLinkedList<>();
+       for(int i = 0;i < 100; i++){
+            list.add(i * i);
+        }
+        System.out.println(list.size());
+       list.remove(0);
+        System.out.println(list.get(98));
     }
 
 }
