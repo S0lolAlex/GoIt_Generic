@@ -46,11 +46,18 @@ public class MyLinkedList<E> {
                 currNode = currNode.next;
             }
         }
+        if(index == size() - 1){
+            while(currNode.size != index){
+                currNode = currNode.next;
+            }
+            currNode = currNode.prev;
+            currNode.next = null;
+        }
         currNode = head;
-        while(currNode != null && currNode.size != index){
+        while(currNode.next != null ){
             currNode = currNode.next;
         }
-        if(index != 0){
+        if(index >= 0 && index <= size() - 1){
         prev = currNode.prev;
         currNode = currNode.next;
         currNode.prev = prev;
@@ -90,8 +97,8 @@ public class MyLinkedList<E> {
             list.add(i * i);
         }
         System.out.println(list.size());
-       list.remove(0);
-        System.out.println(list.get(98));
+       list.remove(99);
+        System.out.println(list.get(99));
     }
 
 }
