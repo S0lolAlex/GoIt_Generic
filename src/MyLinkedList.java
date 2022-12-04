@@ -30,7 +30,7 @@ public class MyLinkedList<E> {
    }
 
     public void clear(){
-       head = null;
+       head = new Node<>(null,null);
        head.size = 0;
     }
 
@@ -98,7 +98,7 @@ public class MyLinkedList<E> {
             list.add(i * i);
         }
         System.out.println(list.size());
-       list.remove(0);
+       list.clear();
         System.out.println(list.get(0));
     }
 
