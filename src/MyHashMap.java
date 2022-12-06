@@ -17,13 +17,11 @@ public class MyHashMap<K,V> {
             size++;
             return;
         }if(array[index].equals(list)){
-            System.out.println(array[index].value);
             array[index].value = value;
         }else{
             Node<K,V> temp = array[index].next;
             while(temp.next != null){
             if(temp.key == key){
-                System.out.println(temp.value);
                 temp.value = value;
                 return;
             }
@@ -33,35 +31,8 @@ public class MyHashMap<K,V> {
                 size++;
             }
         }
-        //resize(array.length * 2);
     }
-//    private void resize(int length){
-//        int index;
-//        int tmpSize = 0;
-//        Node<K, V>[] newNode = new Node[length];
-//        for (Node<K, V> temp : array) {
-//                index = temp.getHash() % length;
-//                if (newNode[index] == null) {
-//                    newNode[index] = temp;
-//                    tmpSize++;
-//                } else {
-//                    if (!newNode[index].equals(temp)) {
-//                        Node<K,V> lastNode = newNode[index].next;
-//                        while(lastNode.next != null){
-//                            if(lastNode.key == temp.key){
-//                                lastNode.value = temp.value;
-//                                return;
-//                            }
-//                            lastNode = lastNode.next;
-//                        }
-//                        lastNode.next = temp;
-//                        tmpSize++;
-//                    }
-//                }
-//        }
-//        this.array = newNode;
-//        size = tmpSize;
-//    }
+
 
     public void clear(){
         array = (Node<K, V>[]) new Node[DEFAULT_SIZE];
