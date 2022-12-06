@@ -1,106 +1,139 @@
+import java.util.Objects;
+
 public class MyHashMap<K,V> {
-    Node<K,V> head;
-    int size ;
+    private final int DEFAULT_SIZE = 16;
+    Node<K,V>[] array = (Node<K,V>[]) new Node[DEFAULT_SIZE];
+    private int size = 0;
 
     public void put(K key, V value){
-        Node<K,V> newNode = new Node<>(key,value);
-        newNode.next = null;
+        Node<K,V> list = new Node<>(hashCode(key),key,value);
+        int index = list.getHash() % array.length;
 
-        if(head == null){
-            head = newNode;
-            size++;
+        if(index < 0){
+            index *= -1;
         }
-         Node<K,V> last = head;
-            while (last.next != null) {
-                if(last.key == key){
-                    System.out.println(last.value);
-                    last.value = value;
-                    return;
-                }
-                last = last.next;
-            }
-            last.next = newNode;
+        if(array[index] == null){
+            array[index] = list;
             size++;
+            return;
+        }if(array[index].equals(list)){
+            System.out.println(array[index].value);
+            array[index].value = value;
+        }else{
+            Node<K,V> temp = array[index].next;
+            while(temp.next != null){
+            if(temp.key == key){
+                System.out.println(temp.value);
+                temp.value = value;
+                return;
+            }
+            temp = temp.next;
+            }if(temp.next == null){
+                temp.next = list;
+                size++;
+            }
+        }
+        //resize(array.length * 2);
     }
+//    private void resize(int length){
+//        int index;
+//        int tmpSize = 0;
+//        Node<K, V>[] newNode = new Node[length];
+//        for (Node<K, V> temp : array) {
+//                index = temp.getHash() % length;
+//                if (newNode[index] == null) {
+//                    newNode[index] = temp;
+//                    tmpSize++;
+//                } else {
+//                    if (!newNode[index].equals(temp)) {
+//                        Node<K,V> lastNode = newNode[index].next;
+//                        while(lastNode.next != null){
+//                            if(lastNode.key == temp.key){
+//                                lastNode.value = temp.value;
+//                                return;
+//                            }
+//                            lastNode = lastNode.next;
+//                        }
+//                        lastNode.next = temp;
+//                        tmpSize++;
+//                    }
+//                }
+//        }
+//        this.array = newNode;
+//        size = tmpSize;
+//    }
 
     public void clear(){
-       head =  null;
-       size = 0;
+        array = (Node<K, V>[]) new Node[DEFAULT_SIZE];
+        size = 0;
     }
-
     public int size(){
         return size;
     }
-
     public void remove(K key){
-        if(head == null) throw new NullPointerException("list empty");
-        Node<K,V> currNode = head, prev = null,temp = head;
-        boolean consist = false;
-        if(head != null){
-            while(temp != null){
-                if(temp.key == key){
-                    consist = true;
+        for(int i = 0; i < array.length; i++){
+                if(array[i] != null && array[i].key == key){
+                if(array[i].next != null){
+                    array[i] = array[i].next;
+                }else{
+                    array[i] = null;}
+            }
+                Node<K,V> temp = array[i];
+                while(temp != null && temp.next != null){
+                        if(temp.next.key == key){
+                            temp.next = temp.next.next;
+                        }
+                        temp = temp.next;
+                    }
+        }
+        size--;
+    }
+    private int hashCode(Object key){
+        return key.hashCode();
+    }
+    public V get(K key) {
+        for(int i = 0; i < array.length; i++){
+            if(array[i] != null && array[i].key == key){
+               return array[i].value;
+            }
+            Node<K,V> temp = array[i];
+            while(temp != null && temp.next != null){
+                if(temp.next.key == key){
+                    temp = temp.next;
+                    return temp.value;
                 }
                 temp = temp.next;
             }
-            if (consist == false)throw new IndexOutOfBoundsException("ключа нет");
         }
-
-        if (currNode != null && currNode.key == key) {
-            head = currNode.next;
-        System.out.println(currNode.value);
-        if(size > 1){size--;}else {size = 0;}
-        }
-        while (currNode != null && currNode.key != key) {
-            prev = currNode;
-            currNode = currNode.next;
-        }
-        if (currNode != null) {
-            prev.next = currNode.next;
-            System.out.println(currNode.value);
-            size--;
-        }
-        if (currNode == null) {
-            System.out.println("key not found");
-        }
-
+        throw new NullPointerException("key not found");
     }
-
-    public V get(K key){
-        if(head == null) throw new NullPointerException("list empty");
-        Node<K,V> currNode = head,temp = head;
-        V value = null;
-        boolean consist = false;
-
-        if(head != null){
-            while(temp != null){
-                if(temp.key == key){
-                    consist = true;
-                }
-                temp = temp.next;
-            }
-            if (consist == false)throw new IndexOutOfBoundsException("ключа нет");
-        }
-
-        while (currNode != null) {
-            if(currNode.key == key){
-               return currNode.value;
-            }
-            currNode = currNode.next;
-        }
-        return value;
-    }
-
 }
 class Node <K,V>{
-     K key;
-     V value;
+    private int hash;
+    final K key;
+    V value;
     Node<K,V> next;
 
-    public Node(K key, V value){
+    public Node(int hash,K key, V value){
+        this.hash = hash;
         this.key = key;
         this.value = value;
         this.next = null;
+    }
+    public int getHash(){
+        return hash;
+    }
+    @Override
+    public boolean equals(Object o){
+        if (this == o){return true;}
+
+        if(o == null || o.getClass() != getClass()) {return false;}
+        Node<K,V> node = (Node<K, V>) o;
+        return Objects.equals(key, node.key);
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(key);
     }
 
 }

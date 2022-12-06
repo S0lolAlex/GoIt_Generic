@@ -2,104 +2,72 @@ import java.util.LinkedList;
 
 public class MyLinkedList<E> {
     private Node<E> head;
+    private Node<E> last;
+    private int size = 0;
 
    public void add(E e){
         Node<E> newNode = new Node<>(null,e);
-        if(head == null){
+        if(size == 0 ){
             head = newNode;
+        }else if(size == 1){
+            last = new Node<>(head,e);
+            head.next = last;
         }else{
-        Node<E> last = head;
-        while(last.next != null){
-            last = last.next;
+            Node<E> current = new Node<>(last,e);
+            last.next = current;
+            last = current;
         }
-        newNode.prev = last;
-        newNode.size = newNode.prev.size + 1;
-        last.next = newNode;}
+        size++;
     }
 
     public E get(int index){
-       if(index > size() - 1) throw new IndexOutOfBoundsException("list is empty or index is invalid");
-        Node<E> currNode = head;
-        while(currNode != null){
-            if(currNode.size == index){
-                return currNode.current;
-            }
-            currNode = currNode.next;
-        }
-        return null;
+       if(0 > index || index > size) throw new IndexOutOfBoundsException("index is invalid");
+
+        return getNodeByIndex(index).current;
    }
 
     public void clear(){
        head = new Node<>(null,null);
-       head.size = 0;
+       size = 0;
     }
 
     public void remove(int index){
-        if(index >= size()) throw new IndexOutOfBoundsException("Выход за пределы");
-        Node<E> currNode = head,prev = null;
+        if(0 > index || index > size) throw new IndexOutOfBoundsException("Выход за пределы");
 
-        if(currNode.size == index){
-            head = currNode.next;
+        Node<E> newNode = getNodeByIndex(index);
+        if(index == 0 ){
+            head = head.next;
             head.prev = null;
-            currNode = head;
-            while(currNode != null){
-                currNode.size--;
-                currNode = currNode.next;
-            }
-        }
-        if(index == size() - 1){
-            while(currNode.size != index){
-                currNode = currNode.next;
-            }
-            currNode = currNode.prev;
-            currNode.next = null;
-        }
-        currNode = head;
-        while(currNode.next != null ){
-            currNode = currNode.next;
-        }
-        if(index > 0 && index <= size() - 1){
-        prev = currNode.prev;
-        currNode = currNode.next;
-        currNode.prev = prev;
-        prev.next = currNode;
+        }else if(index == size){
+         last = last.prev;
+         last.next = null;
+        }else{
+        newNode.prev.next = newNode.next;
+        newNode.next.prev = newNode.prev;}
+        size --;
+    }
 
-        while(currNode != null){
-            currNode.size--;
-            currNode = currNode.next;
-        }
-        }
+    private Node<E> getNodeByIndex(int index){
+       Node<E> tempNode = head;
+       for(int i = 1; i < index;i++){
+           tempNode = tempNode.next;
+       }
+       return tempNode;
     }
     public int size() {
-        if(head == null) {return head.size;}
-       Node<E> currNode = head;
-
-        while(currNode.next != null){
-            currNode = currNode.next;
-        }
-       return currNode.size + 1;
+       return size;
     }
     private class Node<E>{
         E current;
         Node<E> prev;
         Node<E> next;
-        int size = 0;
+
 
         private Node(Node<E> prev, E current){
             this.current = current;
             this.prev = prev;
             this.next = null;
         }
-    }
-
-    public static void main(String[] args) {
-       MyLinkedList<Integer> list = new MyLinkedList<>();
-       for(int i = 0;i < 100; i++){
-            list.add(i * i);
-        }
-        System.out.println(list.size());
-       list.clear();
-        System.out.println(list.get(0));
     }
 
 }

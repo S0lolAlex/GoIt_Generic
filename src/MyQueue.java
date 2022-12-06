@@ -46,9 +46,4 @@ public class MyQueue<T> {
         array = result;
         return value;
     }
-
-    public static void main(String[] args) {
-        MyQueue<String> example = new MyQueue<>();
-        System.out.println(example.peek());
-    }
 }

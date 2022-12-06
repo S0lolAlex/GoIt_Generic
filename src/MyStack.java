@@ -51,7 +51,7 @@ public class MyStack<T> {
         if(array.length == 1 ) {array = null; return value;}
         int size = array.length - 1;
         Object[] result = new Object[size];
-        System.arraycopy(array, 0, result, 0, array.length - 1);
+        System.arraycopy(array, 1, result, 0, array.length - 1);
         array = result;
         return value;
     }
