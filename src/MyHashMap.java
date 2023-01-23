@@ -19,7 +19,7 @@ public class MyHashMap<K,V> {
         }if(array[index].equals(list)){
             array[index].value = value;
         }else{
-            Node<K,V> temp = array[index].next;
+            Node<K,V> temp = array[index];
             while(temp.next != null){
             if(temp.key == key){
                 temp.value = value;
@@ -63,20 +63,25 @@ public class MyHashMap<K,V> {
         return key.hashCode();
     }
     public V get(K key) {
-        for(int i = 0; i < array.length; i++){
-            if(array[i] != null && array[i].key == key){
-               return array[i].value;
-            }
-            Node<K,V> temp = array[i];
-            while(temp != null && temp.next != null){
-                if(temp.next.key == key){
+        V result = null;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null && array[i].key.equals(key)) {
+                result = array[i].value;
+            } else {
+                Node<K, V> temp = array[i];
+                while (temp != null && temp.next != null) {
+                    if (temp.next.key.equals(key)) {
+                        temp = temp.next;
+                        result = temp.value;
+                    }
                     temp = temp.next;
-                    return temp.value;
                 }
-                temp = temp.next;
             }
         }
-        throw new NullPointerException("key not found");
+        if (result == null){
+            throw new NullPointerException("key no4t found");
+        }
+        return result;
     }
 }
 class Node <K,V>{
@@ -108,3 +113,4 @@ class Node <K,V>{
     }
 
 }
+
